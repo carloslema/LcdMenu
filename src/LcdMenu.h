@@ -299,6 +299,31 @@ class LcdMenu {
         paint();
     }
     /**
+     * Call this function in `setup()` to initialize the LCD without a menu. Create the custom
+     * characters used as up and down arrows
+     *
+     * @param lcdAddr hex screen address default is 0x27
+     * 
+     */
+    void setupLcd(uint8_t lcd_Addr) {
+        lcd = new LiquidCrystal_I2C(lcd_Addr, maxCols, maxRows);
+        lcd->init();
+        lcd->backlight();
+        lcd->clear();
+        lcd->createChar(0, upArrow);
+        lcd->createChar(1, downArrow);
+    }
+    /**
+     * Create Menu Obj
+     *
+     * @param menu Obj.
+     * 
+     */
+    void displayMenu(MenuItem* menu){
+        this->currentMenuTable = menu;
+        paint();
+      }
+    /**
      * Call this function to set sub menu items for any main menu item
      *
      * @param position main menu item/where to place the sub menu
@@ -504,6 +529,19 @@ class LcdMenu {
      * @return `cursorPosition` e.g. 1, 2, 3...
      */
     uint8_t getCursorPosition() { return this->cursorPosition; }
+    /**
+     * Print a single screen — No pages.
+     *
+     * @param message message to display
+     * @param row row location 1-2/4
+     * @param col row location 1-16/20
+     * 
+     */
+    void displayMessage(char* message, uint8_t row, uint8_t col){
+        lcd->clear();
+        lcd->setCursor(col, row);
+        lcd->print(message);
+      }
     /**
      * Show a message at the bottom of the screen
      *
